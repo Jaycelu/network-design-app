@@ -127,3 +127,10 @@ npm run desktop:build
 - **主进程（Electron）**：可用 VSCode Attach 到 Electron 进程或通过 `ELECTRON_ENABLE_LOGGING=true` 打印日志
 - **Node 服务器（server.ts）**：将 `dev` 脚本改为 `node --inspect -r tsx/register server.ts` 即可 9229 端口断点调试
 - **Socket.IO**：在浏览器控制台设置 `localStorage.debug='socket.io-client:*'` 后刷新查看详细握手/事件日志
+```
+
+## 更多信息
+- [English README](README.md)
+```
+
+</rewritten_file>
