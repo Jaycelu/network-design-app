@@ -33,17 +33,17 @@ interface ModuleCardProps {
 
 function ModuleCard({ title, icon, features, onClick, badge }: ModuleCardProps) {
   return (
-    <Card className="h-full cursor-pointer hover:shadow-lg transition-shadow duration-200" onClick={onClick}>
+    <Card className="h-full cursor-pointer hover:shadow-lg transition-shadow duration-200 hover:border-primary/50" onClick={onClick}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
+            <div className="p-3 bg-primary/10 rounded-xl">
               {icon}
             </div>
-            <div>
-              <CardTitle className="text-lg">{title}</CardTitle>
+            <div className="text-center flex-1">
+              <CardTitle className="text-xl font-bold">{title}</CardTitle>
               {badge && (
-                <Badge variant="secondary" className="mt-1">
+                <Badge variant="secondary" className="mt-2">
                   {badge}
                 </Badge>
               )}
@@ -57,14 +57,14 @@ function ModuleCard({ title, icon, features, onClick, badge }: ModuleCardProps) 
           <div className="grid grid-cols-1 gap-2">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="w-1 h-1 bg-primary rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
                 {feature}
               </div>
             ))}
           </div>
         </div>
         
-        <Button className="w-full mt-4">
+        <Button className="w-full mt-4 hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
           进入模块
         </Button>
       </CardContent>
@@ -78,7 +78,9 @@ export function MainDashboard({ onModuleSelect }: MainDashboardProps) {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">网络工程师一站式集成服务</h1>
+          <div className="inline-block bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 rounded-2xl px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm">
+            <h1 className="text-4xl font-bold text-foreground">网络工程师一站式集成服务</h1>
+          </div>
         </div>
 
         {/* Module Cards */}
@@ -114,37 +116,6 @@ export function MainDashboard({ onModuleSelect }: MainDashboardProps) {
             ]}
             onClick={() => onModuleSelect('device')}
           />
-        </div>
-
-        {/* Statistics */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-primary mb-2">10K+</div>
-              <div className="text-sm text-muted-foreground">服务企业</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-primary mb-2">50K+</div>
-              <div className="text-sm text-muted-foreground">设计项目</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-primary mb-2">99.9%</div>
-              <div className="text-sm text-muted-foreground">系统可用性</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-primary mb-2">24/7</div>
-              <div className="text-sm text-muted-foreground">技术支持</div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

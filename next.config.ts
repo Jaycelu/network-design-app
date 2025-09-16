@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
     // 构建时忽略ESLint错误
     ignoreDuringBuilds: true,
   },
+  // 启用独立模式
+  output: 'standalone',
 };
 
 export default nextConfig;

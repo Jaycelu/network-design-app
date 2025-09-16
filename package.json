@@ -5,7 +5,7 @@
     "main": "electron/main.js",
     "build": {
         "appId": "com.yourcompany.networkdesignapp",
-        "productName": "Network Design App",
+        "productName": "JacyeLu-online",
         "files": [
             "electron/**/*",
             "public/**/*",
@@ -44,7 +44,7 @@
         "db:generate": "prisma generate",
         "db:migrate": "prisma migrate dev",
         "db:reset": "prisma migrate reset",
-        "desktop:dev": "concurrently -k -n srv,app \"npm:dev\" \"wait-on http://127.0.0.1:3000 && electron .\"",
+        "desktop:dev": "concurrently -k -n srv,app \"npm:dev\" \"wait-on http://127.0.0.1:3000 && set NODE_ENV=development && electron .\"",
         "desktop:pack": "npm run build && electron-builder --dir",
         "desktop:build": "npm run build && electron-builder",
         "desktop:electron": "electron .",

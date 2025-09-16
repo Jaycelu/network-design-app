@@ -7,6 +7,7 @@ import { MainDashboard } from './MainDashboard';
 import { AIIntegratedGenerator } from './AIIntegratedGenerator';
 import { PropertiesPanel } from './PropertiesPanel';
 import { CanvasArea } from './CanvasArea';
+import { DeviceManagement } from './DeviceManagement';
 
 type ViewMode = 'main' | 'project' | 'device' | 'ai-generator' | 'topology';
 
@@ -38,20 +39,7 @@ export function NetworkDesigner() {
         />;
       
       case 'device':
-        return (
-          <div className="h-full flex items-center justify-center bg-muted/20">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-2">设备管理模块</h3>
-              <p className="text-muted-foreground">设备管理功能正在开发中...</p>
-              <button 
-                onClick={() => setViewMode('main')}
-                className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-              >
-                返回主页
-              </button>
-            </div>
-          </div>
-        );
+        return <DeviceManagement onBackToMain={() => setViewMode('main')} />;
       
       default:
         return <MainDashboard onModuleSelect={handleModuleSelect} />;
