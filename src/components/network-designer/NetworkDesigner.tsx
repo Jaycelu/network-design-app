@@ -9,17 +9,30 @@ import { PropertiesPanel } from './PropertiesPanel';
 import { CanvasArea } from './CanvasArea';
 import { DeviceManagement } from './DeviceManagement';
 
-type ViewMode = 'main' | 'project' | 'device' | 'ai-generator' | 'topology';
+type ViewMode = 'main' | 'project' | 'device' | 'ai-generator' | 'topology' | 'monitor' | 'report';
 
 export function NetworkDesigner() {
   const [viewMode, setViewMode] = useState<ViewMode>('main');
   const [selectedNode, setSelectedNode] = useState<any>(null);
 
-  const handleModuleSelect = (module: 'project' | 'device') => {
-    if (module === 'project') {
-      setViewMode('ai-generator');
-    } else {
-      setViewMode('device');
+  const handleModuleSelect = (module: 'project' | 'device' | 'monitor' | 'report') => {
+    switch (module) {
+      case 'project':
+        setViewMode('ai-generator');
+        break;
+      case 'device':
+        setViewMode('device');
+        break;
+      case 'monitor':
+        // TODO: Implement monitoring module
+        setViewMode('main');
+        break;
+      case 'report':
+        // TODO: Implement reporting module
+        setViewMode('main');
+        break;
+      default:
+        setViewMode('main');
     }
   };
 

@@ -61,6 +61,11 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
     vlanStrategy: 'functional',
     trunkProtocol: '802.1q',
     
+    // 安全配置
+    securityRequirements: 'basic',
+    firewallType: 'next-gen',
+    intrusionDetection: false,
+    
     // 文档生成配置
     documentFormat: 'pdf',
     includeTopology: true,
@@ -68,7 +73,8 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
     includeIPPlan: true,
     includeVLANConfig: true,
     includeImplementation: true,
-    includeBudget: true
+    includeBudget: true,
+    includeSecurity: true
   });
 
   const handleGenerate = async () => {
@@ -93,7 +99,7 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
             { type: '核心路由器', count: 2, role: '核心层', model: 'Cisco ISR 4000' },
             { type: '汇聚交换机', count: 3, role: '汇聚层', model: 'Cisco Catalyst 9300' },
             { type: '接入交换机', count: parseInt(requirements.deviceCount) || 10, role: '接入层', model: 'Cisco Catalyst 9200' },
-            { type: '防火墙', count: 1, role: '安全层', model: 'Fortigate 600E' }
+            { type: '防火墙', count: 1, role: '安全层', model: requirements.firewallType === 'next-gen' ? 'Fortigate 600E' : 'Cisco ASA 5500' }
           ]
         },
         
@@ -105,7 +111,8 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
             { name: '管理网络', cidr: '192.168.1.0/24', purpose: '设备管理', gateway: '192.168.1.1' },
             { name: '用户网络', cidr: '192.168.10.0/24', purpose: '普通用户', gateway: '192.168.10.1' },
             { name: '服务器网络', cidr: '192.168.20.0/24', purpose: '服务器群', gateway: '192.168.20.1' },
-            { name: '访客网络', cidr: '192.168.30.0/24', purpose: '访客接入', gateway: '192.168.30.1' }
+            { name: '访客网络', cidr: '192.168.30.0/24', purpose: '访客接入', gateway: '192.168.30.1' },
+            { name: '安全网络', cidr: '192.168.40.0/24', purpose: '安全设备', gateway: '192.168.40.1' }
           ],
           allocationStrategy: requirements.addressAllocation === 'dynamic' ? '动态分配为主' : '静态分配为主',
           dhcpConfig: {
@@ -124,11 +131,12 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
             { id: 20, name: '用户VLAN', purpose: '普通用户', network: '192.168.10.0/24', ports: 100 },
             { id: 30, name: '服务器VLAN', purpose: '服务器群', network: '192.168.20.0/24', ports: 48 },
             { id: 40, name: '访客VLAN', purpose: '访客接入', network: '192.168.30.0/24', ports: 50 },
-            { id: 50, name: '语音VLAN', purpose: 'VoIP电话', network: '192.168.40.0/24', ports: 30 }
+            { id: 50, name: '语音VLAN', purpose: 'VoIP电话', network: '192.168.40.0/24', ports: 30 },
+            { id: 60, name: '安全VLAN', purpose: '安全设备', network: '192.168.50.0/24', ports: 20 }
           ],
           trunkConfig: {
             protocol: requirements.trunkProtocol,
-            allowedVlans: '10-50',
+            allowedVlans: '10-60',
             nativeVlan: 1
           },
           securityConfig: {
@@ -139,12 +147,47 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
           }
         },
         
+        // 安全配置
+        security: {
+          requirements: requirements.securityRequirements,
+          firewall: {
+            type: requirements.firewallType,
+            model: requirements.firewallType === 'next-gen' ? 'Fortigate 600E' : 'Cisco ASA 5500',
+            features: requirements.firewallType === 'next-gen' ? [
+              '应用控制',
+              '入侵防护',
+              '病毒防护',
+              'Web过滤'
+            ] : [
+              '包过滤',
+              '状态检测',
+              'VPN支持'
+            ]
+          },
+          ids: requirements.intrusionDetection ? {
+            enabled: true,
+            type: '网络入侵检测',
+            model: 'Snort',
+            deployment: '旁路部署'
+          } : {
+            enabled: false
+          },
+          accessControl: {
+            strategy: '基于角色的访问控制',
+            authentication: '802.1X',
+            authorization: 'TACACS+'
+          }
+        },
+        
         // 项目估算
         estimation: {
-          cost: '¥80,000-120,000',
+          cost: requirements.securityRequirements === 'enterprise' ? '¥120,000-180,000' : 
+                 requirements.securityRequirements === 'enhanced' ? '¥100,000-150,000' : '¥80,000-120,000',
           timeline: '3-4周',
-          complexity: '中等',
-          riskLevel: '低'
+          complexity: requirements.securityRequirements === 'enterprise' ? '高' : 
+                      requirements.securityRequirements === 'enhanced' ? '中高' : '中等',
+          riskLevel: requirements.securityRequirements === 'enterprise' ? '低' : 
+                     requirements.securityRequirements === 'enhanced' ? '中低' : '低'
         }
       });
       setIsGenerating(false);
@@ -496,6 +539,68 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
               </CardContent>
             </Card>
 
+            {/* Security Configuration */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  安全配置
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">安全要求</label>
+                    <Select 
+                      value={requirements.securityRequirements} 
+                      onValueChange={(value) => setRequirements(prev => ({ ...prev, securityRequirements: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="basic">基础安全</SelectItem>
+                        <SelectItem value="enhanced">增强安全</SelectItem>
+                        <SelectItem value="enterprise">企业级安全</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">防火墙类型</label>
+                    <Select 
+                      value={requirements.firewallType} 
+                      onValueChange={(value) => setRequirements(prev => ({ ...prev, firewallType: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="next-gen">下一代防火墙</SelectItem>
+                        <SelectItem value="traditional">传统防火墙</SelectItem>
+                        <SelectItem value="cloud">云防火墙</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2 flex items-end">
+                    <label className="text-sm font-medium flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={requirements.intrusionDetection}
+                        onChange={(e) => setRequirements(prev => ({ 
+                          ...prev, 
+                          intrusionDetection: e.target.checked 
+                        }))}
+                        className="rounded"
+                      />
+                      入侵检测系统
+                    </label>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Documentation Generation Configuration */}
             <Card>
               <CardHeader>
@@ -534,12 +639,13 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
                       { key: 'includeIPPlan', label: 'IP地址规划' },
                       { key: 'includeVLANConfig', label: 'VLAN配置' },
                       { key: 'includeImplementation', label: '实施计划' },
-                      { key: 'includeBudget', label: '预算分析' }
+                      { key: 'includeBudget', label: '预算分析' },
+                      { key: 'includeSecurity', label: '安全配置' }
                     ].map((item) => (
                       <label key={item.key} className="flex items-center gap-2 text-sm">
                         <input
                           type="checkbox"
-                          checked={requirements[item.key as keyof typeof requirements]}
+                          checked={requirements[item.key as keyof typeof requirements] as boolean}
                           onChange={(e) => setRequirements(prev => ({ 
                             ...prev, 
                             [item.key]: e.target.checked 
@@ -770,6 +876,77 @@ export function AIIntegratedGenerator({ onBackToMain }: AIIntegratedGeneratorPro
                 </div>
               </CardContent>
             </Card>
+
+            {/* Security Configuration */}
+            {requirements.includeSecurity && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    安全配置
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <h4 className="font-medium">安全要求</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">安全级别：</span>
+                          <Badge variant={
+                            generatedArchitecture.security.requirements === 'enterprise' ? 'default' :
+                            generatedArchitecture.security.requirements === 'enhanced' ? 'secondary' : 'outline'
+                          }>
+                            {generatedArchitecture.security.requirements === 'enterprise' ? '企业级安全' :
+                             generatedArchitecture.security.requirements === 'enhanced' ? '增强安全' : '基础安全'}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">防火墙类型：</span>
+                          <span>{generatedArchitecture.security.firewall.type}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">防火墙型号：</span>
+                          <span>{generatedArchitecture.security.firewall.model}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <h4 className="font-medium">安全功能</h4>
+                      <div className="space-y-2">
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium">防火墙功能：</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {generatedArchitecture.security.firewall.features.map((feature: string, index: number) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                {feature}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center pt-2">
+                          <span className="text-sm font-medium">入侵检测：</span>
+                          {generatedArchitecture.security.ids.enabled ? (
+                            <div className="flex items-center gap-2">
+                              <Badge variant="default" className="text-xs">已启用</Badge>
+                              <span className="text-xs text-muted-foreground">
+                                {generatedArchitecture.security.ids.type}
+                              </span>
+                            </div>
+                          ) : (
+                            <Badge variant="outline" className="text-xs">未启用</Badge>
+                          )}
+                        </div>
+                        <div className="flex justify-between pt-2">
+                          <span className="text-muted-foreground">访问控制：</span>
+                          <span>{generatedArchitecture.security.accessControl.strategy}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Action Buttons */}
             <Card>

@@ -25,8 +25,8 @@ function createWindow() {
   if (isDev) {
     // 在开发模式下，直接连接到已经启动的服务器
     console.log('开发模式下启动应用');
-    console.log('正在加载 URL: http://localhost:3000');
-    mainWindow.loadURL('http://localhost:3000');
+    console.log('正在加载 URL: http://localhost:3005');
+    mainWindow.loadURL('http://localhost:3005');
     // 打开开发者工具
     mainWindow.webContents.openDevTools();
   } else {
@@ -42,7 +42,7 @@ function createWindow() {
     
     // 等待服务器启动后加载URL
     setTimeout(() => {
-      mainWindow.loadURL('http://localhost:3000');
+      mainWindow.loadURL('http://localhost:3005');
     }, 3000);
   }
 

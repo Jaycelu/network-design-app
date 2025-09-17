@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, memo } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -27,9 +27,9 @@ interface CanvasAreaProps {
   onNodeSelect: (node: any) => void;
 }
 
-// Custom Node Component
-const CustomNode = ({ data, selected }: { data: any; selected: boolean }) => {
-  const getIcon = () => {
+// Custom Node Component with memoization for performance
+const CustomNode = memo(({ data, selected }: { data: any; selected: boolean }) => {
+  const getIcon = useCallback(() => {
     switch (data.type) {
       case 'router':
         return <Router className="w-6 h-6" />;
@@ -44,7 +44,7 @@ const CustomNode = ({ data, selected }: { data: any; selected: boolean }) => {
       default:
         return <Network className="w-6 h-6" />;
     }
-  };
+  }, [data.type]);
 
   return (
     <div
@@ -65,7 +65,9 @@ const CustomNode = ({ data, selected }: { data: any; selected: boolean }) => {
       </div>
     </div>
   );
-};
+});
+
+CustomNode.displayName = 'CustomNode';
 
 // Node types
 const nodeTypes: NodeTypes = {
@@ -145,7 +147,12 @@ export function CanvasArea({ activeModule, activeSubModule, onNodeSelect }: Canv
     onNodeSelect(node);
   }, [onNodeSelect]);
 
-  const addNode = (type: string, label: string) => {
+  // Memoized node click handler
+  const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    onNodeClick(event, node);
+  }, [onNodeClick]);
+
+  const addNode = useCallback((type: string, label: string) => {
     const newNode: Node = {
       id: `${nodes.length + 1}`,
       type: 'custom',
@@ -161,7 +168,7 @@ export function CanvasArea({ activeModule, activeSubModule, onNodeSelect }: Canv
       },
     };
     setNodes((nds) => [...nds, newNode]);
-  };
+  }, [nodes.length, setNodes]);
 
   // Show AI Architecture Generator for AI sub-module
   if (activeModule === 'project' && activeSubModule === 'ai-architecture') {
@@ -291,10 +298,11 @@ export function CanvasArea({ activeModule, activeSubModule, onNodeSelect }: Canv
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onNodeClick={onNodeClick}
+        onNodeClick={handleNodeClick}
         nodeTypes={nodeTypes}
         fitView
         attributionPosition="bottom-left"
+        fitViewOptions={{ padding: 0.1 }}
       >
         <Controls />
         <MiniMap

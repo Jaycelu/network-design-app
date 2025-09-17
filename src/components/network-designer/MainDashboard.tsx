@@ -7,19 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Network, 
   Settings, 
-  FolderOpen, 
   Wand2,
-  Users,
-  Zap,
-  Shield,
   FileText,
-  Activity,
-  GitBranch,
-  Monitor
+  Activity
 } from 'lucide-react';
 
 interface MainDashboardProps {
-  onModuleSelect: (module: 'project' | 'device') => void;
+  onModuleSelect: (module: 'project' | 'device' | 'monitor' | 'report') => void;
 }
 
 interface ModuleCardProps {
@@ -33,17 +27,17 @@ interface ModuleCardProps {
 
 function ModuleCard({ title, icon, features, onClick, badge }: ModuleCardProps) {
   return (
-    <Card className="h-full cursor-pointer hover:shadow-lg transition-shadow duration-200 hover:border-primary/50" onClick={onClick}>
+    <Card className="h-full cursor-pointer hover:shadow-lg transition-all duration-300 hover:border-primary/50 hover:-translate-y-1" onClick={onClick}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-primary/10 rounded-xl">
               {icon}
             </div>
-            <div className="text-center flex-1">
-              <CardTitle className="text-xl font-bold">{title}</CardTitle>
+            <div>
+              <CardTitle className="text-lg font-bold">{title}</CardTitle>
               {badge && (
-                <Badge variant="secondary" className="mt-2">
+                <Badge variant="secondary" className="mt-1">
                   {badge}
                 </Badge>
               )}
@@ -64,7 +58,7 @@ function ModuleCard({ title, icon, features, onClick, badge }: ModuleCardProps) 
           </div>
         </div>
         
-        <Button className="w-full mt-4 hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+        <Button className="w-full hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-300">
           进入模块
         </Button>
       </CardContent>
@@ -84,19 +78,18 @@ export function MainDashboard({ onModuleSelect }: MainDashboardProps) {
         </div>
 
         {/* Module Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Project Management Module */}
           <ModuleCard
             title="项目管理"
+            description="AI驱动的网络项目设计与管理工具"
             icon={<Wand2 className="w-8 h-8 text-primary" />}
             badge="AI智能"
             features={[
               "AI智能网络一键生成",
               "网络架构拓扑设计",
               "IP地址自动规划",
-              "VLAN逻辑隔离设计",
-              "项目文档自动生成",
-              "成本预算分析"
+              "VLAN逻辑隔离设计"
             ]}
             onClick={() => onModuleSelect('project')}
           />
@@ -104,17 +97,46 @@ export function MainDashboard({ onModuleSelect }: MainDashboardProps) {
           {/* Device Management Module */}
           <ModuleCard
             title="设备管理"
+            description="网络设备配置与监控管理平台"
             icon={<Settings className="w-8 h-8 text-primary" />}
             badge="专业工具"
             features={[
               "设备配置自动生成",
               "批量配置下发",
               "设备状态实时监控",
-              "配置版本管理",
-              "故障诊断与告警",
-              "性能数据分析"
+              "配置版本管理"
             ]}
             onClick={() => onModuleSelect('device')}
+          />
+
+          {/* Network Monitoring Module */}
+          <ModuleCard
+            title="网络监控"
+            description="实时网络性能监控与告警系统"
+            icon={<Activity className="w-8 h-8 text-primary" />}
+            badge="实时数据"
+            features={[
+              "网络流量分析",
+              "设备性能监控",
+              "告警通知管理",
+              "历史数据查询"
+            ]}
+            onClick={() => onModuleSelect('monitor')}
+          />
+
+          {/* Reporting Module */}
+          <ModuleCard
+            title="报表分析"
+            description="数据驱动的网络分析与报告工具"
+            icon={<FileText className="w-8 h-8 text-primary" />}
+            badge="数据洞察"
+            features={[
+              "自定义报表生成",
+              "数据可视化展示",
+              "趋势分析预测",
+              "导出多种格式"
+            ]}
+            onClick={() => onModuleSelect('report')}
           />
         </div>
       </div>

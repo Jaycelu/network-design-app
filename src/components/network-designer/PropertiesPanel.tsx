@@ -96,9 +96,14 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                     </Select>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-green-600">在线</span>
+                  <div className="space-y-2">
+                    <Label>设备状态</Label>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${selectedNode.data?.status === 'online' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                      <span className={`text-sm ${selectedNode.data?.status === 'online' ? 'text-green-600' : 'text-red-600'}`}>
+                        {selectedNode.data?.status === 'online' ? '在线' : '离线'}
+                      </span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -134,6 +139,11 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                   </div>
                   
                   <div className="space-y-2">
+                    <Label>网关</Label>
+                    <Input placeholder="192.168.1.1" />
+                  </div>
+                  
+                  <div className="space-y-2">
                     <Label>描述</Label>
                     <Input 
                       placeholder="设备描述信息"
@@ -143,6 +153,29 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                         description: e.target.value
                       }))}
                     />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Advanced Configuration */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">高级配置</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-2">
+                    <Label>设备型号</Label>
+                    <Input placeholder="Cisco ISR 4000" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>固件版本</Label>
+                    <Input placeholder="15.2(4)M11" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>序列号</Label>
+                    <Input placeholder="FCW12345678" />
                   </div>
                 </CardContent>
               </Card>
@@ -160,6 +193,10 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                   <Button variant="outline" className="w-full" size="sm">
                     <Monitor className="w-4 h-4 mr-2" />
                     查看状态
+                  </Button>
+                  <Button variant="outline" className="w-full" size="sm">
+                    <Activity className="w-4 h-4 mr-2" />
+                    性能监控
                   </Button>
                 </CardContent>
               </Card>
@@ -424,9 +461,14 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                   </Select>
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-600">在线</span>
+                <div className="space-y-2">
+                  <Label>设备状态</Label>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${selectedNode.data?.status === 'online' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    <span className={`text-sm ${selectedNode.data?.status === 'online' ? 'text-green-600' : 'text-red-600'}`}>
+                      {selectedNode.data?.status === 'online' ? '在线' : '离线'}
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -462,6 +504,11 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                 </div>
                 
                 <div className="space-y-2">
+                  <Label>网关</Label>
+                  <Input placeholder="192.168.1.1" />
+                </div>
+                
+                <div className="space-y-2">
                   <Label>描述</Label>
                   <Input 
                     placeholder="设备描述信息"
@@ -471,6 +518,29 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                       description: e.target.value
                     }))}
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Advanced Configuration */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">高级配置</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <Label>设备型号</Label>
+                  <Input placeholder="Cisco ISR 4000" />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>固件版本</Label>
+                  <Input placeholder="15.2(4)M11" />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>序列号</Label>
+                  <Input placeholder="FCW12345678" />
                 </div>
               </CardContent>
             </Card>
@@ -488,6 +558,10 @@ export function PropertiesPanel({ selectedNode, activeModule, activeSubModule }:
                 <Button variant="outline" className="w-full" size="sm">
                   <Monitor className="w-4 h-4 mr-2" />
                   查看状态
+                </Button>
+                <Button variant="outline" className="w-full" size="sm">
+                  <Activity className="w-4 h-4 mr-2" />
+                  性能监控
                 </Button>
               </CardContent>
             </Card>

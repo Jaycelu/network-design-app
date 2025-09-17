@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import next from 'next';
 
 const dev = process.env.NODE_ENV !== 'production';
-const currentPort = Number(process.env.PORT || 3000);
+const currentPort = Number(process.env.PORT || 3005);
 const hostname = '127.0.0.1';
 
 // Custom server with Socket.IO integration
@@ -39,7 +39,7 @@ async function createCustomServer() {
             origin: 'http://localhost:' + currentPort,
             methods: ['GET', 'POST']
           }
-        : false
+        : undefined
     });
 
     setupSocket(io);
