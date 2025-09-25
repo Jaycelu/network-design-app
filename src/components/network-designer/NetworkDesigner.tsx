@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { TopToolbar } from './TopToolbar';
@@ -8,14 +6,16 @@ import { AIIntegratedGenerator } from './AIIntegratedGenerator';
 import { PropertiesPanel } from './PropertiesPanel';
 import { CanvasArea } from './CanvasArea';
 import { DeviceManagement } from './DeviceManagement';
+import { AITroubleshooting } from './AITroubleshooting';
+import { PacketAnalysis } from './PacketAnalysis';
 
-type ViewMode = 'main' | 'project' | 'device' | 'ai-generator' | 'topology' | 'monitor' | 'report';
+type ViewMode = 'main' | 'project' | 'device' | 'ai-generator' | 'topology' | 'ai-troubleshooting' | 'report' | 'packet-analysis';
 
 export function NetworkDesigner() {
   const [viewMode, setViewMode] = useState<ViewMode>('main');
   const [selectedNode, setSelectedNode] = useState<any>(null);
 
-  const handleModuleSelect = (module: 'project' | 'device' | 'monitor' | 'report') => {
+  const handleModuleSelect = (module: 'project' | 'device' | 'ai-troubleshooting' | 'report') => {
     switch (module) {
       case 'project':
         setViewMode('ai-generator');
@@ -23,13 +23,12 @@ export function NetworkDesigner() {
       case 'device':
         setViewMode('device');
         break;
-      case 'monitor':
-        // TODO: Implement monitoring module
-        setViewMode('main');
+      case 'ai-troubleshooting':
+        setViewMode('ai-troubleshooting');
         break;
       case 'report':
-        // TODO: Implement reporting module
-        setViewMode('main');
+        // Packet analysis module
+        setViewMode('packet-analysis');
         break;
       default:
         setViewMode('main');
@@ -53,6 +52,12 @@ export function NetworkDesigner() {
       
       case 'device':
         return <DeviceManagement onBackToMain={() => setViewMode('main')} />;
+      
+      case 'ai-troubleshooting':
+        return <AITroubleshooting onBackToMain={() => setViewMode('main')} />;
+      
+      case 'packet-analysis':
+        return <PacketAnalysis onBackToMain={() => setViewMode('main')} />;
       
       default:
         return <MainDashboard onModuleSelect={handleModuleSelect} />;

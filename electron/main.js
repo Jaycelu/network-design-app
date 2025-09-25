@@ -1,6 +1,7 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
+const os = require('os');
 
 let mainWindow;
 let serverProcess;
@@ -88,5 +89,36 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+// 处理获取网络接口信息的请求
+ipcMain.handle('get-network-interfaces', async () => {
+  try {
+    const interfaces = os.networkInterfaces();
+    const result = [];
+    
+    for (const [name, networkInfos] of Object.entries(interfaces)) {
+      if (networkInfos) {
+        for (const networkInfo of networkInfos) {
+          // 只处理 IPv4 地址并且不是内部地址
+          if (networkInfo.family === 'IPv4' && !networkInfo.internal) {
+            result.push({
+              name,
+              address: networkInfo.address,
+              netmask: networkInfo.netmask,
+              mac: networkInfo.mac,
+              family: networkInfo.family,
+              internal: networkInfo.internal,
+            });
+          }
+        }
+      }
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('获取网络接口信息失败:', error);
+    return [];
   }
 });

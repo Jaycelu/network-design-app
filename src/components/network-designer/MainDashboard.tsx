@@ -9,11 +9,12 @@ import {
   Settings, 
   Wand2,
   FileText,
-  Activity
+  Activity,
+  PackageSearch
 } from 'lucide-react';
 
 interface MainDashboardProps {
-  onModuleSelect: (module: 'project' | 'device' | 'monitor' | 'report') => void;
+  onModuleSelect: (module: 'project' | 'device' | 'ai-troubleshooting' | 'report') => void;
 }
 
 interface ModuleCardProps {
@@ -109,32 +110,32 @@ export function MainDashboard({ onModuleSelect }: MainDashboardProps) {
             onClick={() => onModuleSelect('device')}
           />
 
-          {/* Network Monitoring Module */}
+          {/* AI Troubleshooting Module */}
           <ModuleCard
-            title="网络监控"
-            description="实时网络性能监控与告警系统"
+            title="AI排错"
+            description="基于AI的网络故障诊断与解决方案"
             icon={<Activity className="w-8 h-8 text-primary" />}
-            badge="实时数据"
+            badge="AI智能"
             features={[
-              "网络流量分析",
-              "设备性能监控",
-              "告警通知管理",
-              "历史数据查询"
+              "智能问题分析诊断",
+              "排错步骤指导",
+              "解决方案推荐",
+              "历史问题查询"
             ]}
-            onClick={() => onModuleSelect('monitor')}
+            onClick={() => onModuleSelect('ai-troubleshooting')}
           />
 
-          {/* Reporting Module */}
+          {/* Packet Analysis Module */}
           <ModuleCard
-            title="报表分析"
-            description="数据驱动的网络分析与报告工具"
-            icon={<FileText className="w-8 h-8 text-primary" />}
-            badge="数据洞察"
+            title="抓包分析"
+            description="网络数据包捕获与AI智能分析工具"
+            icon={<PackageSearch className="w-8 h-8 text-primary" />}
+            badge="网络诊断"
             features={[
-              "自定义报表生成",
-              "数据可视化展示",
-              "趋势分析预测",
-              "导出多种格式"
+              "实时数据包捕获",
+              "流量模式分析",
+              "异常检测识别",
+              "AI智能诊断"
             ]}
             onClick={() => onModuleSelect('report')}
           />

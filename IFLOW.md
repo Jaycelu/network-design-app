@@ -68,9 +68,13 @@ npm run desktop:build
 - **NetworkDesigner.tsx**: 主容器组件，管理视图模式和路由
 - **CanvasArea.tsx**: 使用 React Flow 实现的可视化画布，支持拖拽节点、连接线等
 - **AIIntegratedGenerator.tsx**: AI 集成生成器，根据用户输入自动生成网络架构方案
-- **TopToolbar.tsx**: 顶部工具栏
+- **TopToolbar.tsx**: 顶部工具栏，包含用户认证功能
 - **PropertiesPanel.tsx**: 属性面板，用于显示和编辑选中元素的属性
 - **MainDashboard.tsx**: 主仪表板，提供模块选择入口
+- **DeviceManagement.tsx**: 设备管理模块，支持多厂商设备管理、拖拽排序、实时搜索等
+- **ProjectManagement.tsx**: 项目管理模块
+- **Sidebar.tsx**: 侧边栏导航
+- **ThemeToggle.tsx**: 主题切换组件
 
 ## 2. WebSocket 通信
 - 服务端 Socket 初始化：`src/lib/socket.ts`
@@ -78,6 +82,12 @@ npm run desktop:build
 
 ## 3. 自定义服务器
 `server.ts` 文件实现了 Next.js 应用与 Socket.IO 服务器的集成。
+
+## 4. 用户认证系统
+- 基于 JWT 的用户认证机制
+- 支持用户名、邮箱、手机号登录
+- 用户信息本地缓存，7天有效期
+- 服务端 API 地址：`http://152.136.160.91:9528`
 
 # 开发约定
 
@@ -99,7 +109,9 @@ npm run desktop:build
 "db:generate": "prisma generate",
 "db:migrate":  "prisma migrate dev",
 "db:reset":    "prisma migrate reset",
-"desktop:dev": "concurrently -k -n srv,app \"npm:dev\" \"wait-on http://localhost:3000 && electron .\"",
+"desktop:dev": "concurrently -k -n srv,app \"npm:dev\" \"wait-on http://127.0.0.1:3005 && set NODE_ENV=development && electron .\"",
 "desktop:pack": "npm run build && electron-builder --dir",
-"desktop:build": "npm run build && electron-builder"
+"desktop:build": "npm run build && electron-builder",
+"desktop:electron": "electron .",
+"desktop:simple": "NODE_ENV=development electron ."
 ```
