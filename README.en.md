@@ -25,12 +25,21 @@ A comprehensive network operations platform designed specifically for network en
 - **Knowledge Base Integration**: Access network troubleshooting knowledge base for quick solutions
 - **History Management**: Save troubleshooting history and build problem resolution archives
 
+### 💬 AI Intelligent Chat
+- **Smart Conversation Assistant**: AI-powered intelligent dialogue system
+- **Network Knowledge Q&A**: Answer network-related technical questions
+- **Real-Time Interaction**: Support real-time conversation and context understanding
+- **Multi-Turn Dialogue**: Support complex multi-turn conversation scenarios
+- **Knowledge Base Integration**: Integrated network engineering knowledge base
+
 ### 📊 Packet Capture & Analysis
 - **Real-Time Traffic Capture**: Support multi-interface simultaneous packet capture with real-time network traffic monitoring
 - **Intelligent Traffic Analysis**: AI-powered analysis of network traffic patterns to identify anomalous behavior
 - **Performance Diagnostics**: Analyze network performance issues and identify bottlenecks
 - **Security Detection**: Identify potential security threats and abnormal traffic patterns
 - **Visual Reports**: Generate intuitive traffic analysis reports and charts
+- **PCAP File Management**: Support PCAP file upload, download, and analysis
+- **Multi-Interface Support**: Auto-detect all network interfaces including wireless and wired
 
 ## 🎯 Use Cases
 
@@ -86,6 +95,32 @@ A comprehensive network operations platform designed specifically for network en
 2. **Device Management Module**: Manage and monitor network devices
 3. **AI Troubleshooting Module**: Intelligent network problem diagnosis
 4. **Packet Analysis Module**: Deep network traffic analysis
+5. **AI Chat Module**: Intelligent conversation and knowledge Q&A
+6. **WebSocket Demo**: Real-time communication functionality showcase
+
+## 🔧 Technical Architecture
+
+### Frontend Technologies
+- **Next.js 15**: Modern React framework with App Router support
+- **TypeScript**: Type-safe JavaScript superset
+- **Tailwind CSS**: Utility-first CSS framework
+- **shadcn/ui**: Component library based on Radix UI
+
+### Backend Technologies
+- **Node.js + Express**: High-performance JavaScript runtime
+- **Socket.IO**: Real-time bidirectional communication
+- **Prisma**: Modern database ORM
+- **Python + Scapy**: Network packet capture and analysis
+
+### AI Integration
+- **Intelligent Dialogue System**: AI-powered chat functionality
+- **Network Analysis AI**: AI-driven network problem diagnosis
+- **Architecture Generation AI**: Intelligent network architecture design
+
+### Data Storage
+- **PCAP File Management**: Network capture file storage
+- **User Data Cache**: Local storage of user authentication information
+- **Project Data**: Network design solution storage
 
 ## 📋 Supported Scenarios
 
