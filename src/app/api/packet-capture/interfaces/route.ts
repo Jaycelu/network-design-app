@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const networkInterfaces = await si.networkInterfaces();
     console.log('原始网络接口数据:', JSON.stringify(networkInterfaces, null, 2));
     
-    // 显示所有网卡，除了环回口 - 不移除乱码接口
+    // 显示所有网卡，除了环回口 - 显示全部网络接口（包含乱码接口）
     const formattedInterfaces = networkInterfaces
       .filter((iface: any) => 
         iface.iface && 

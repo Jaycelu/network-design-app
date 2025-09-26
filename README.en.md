@@ -1,100 +1,101 @@
-# Network Design App
+# Network Engineer Integrated Service Platform
 
-A modern network design app scaffold built with Next.js 15, TypeScript, Tailwind CSS, and shadcn/ui. It ships with Prisma, Socket.IO, a custom server, and a rich component set—ready for rapid prototyping and production deployment.
+A comprehensive network operations platform designed specifically for network engineers, integrating core functions such as network design, device management, troubleshooting, and traffic analysis. Powered by AI technology to enhance productivity and efficiency.
 
-## Highlights
-- **Modern stack**: Next.js 15 (App Router), TypeScript 5, Tailwind CSS 4, shadcn/ui
-- **Real-time**: Socket.IO integration via custom server at `/api/socketio`
-- **Database-ready**: Prisma ORM (optional) with centralized `db` client
-- **Rich UI**: Common components and interactions (dialogs, drawers, forms, tables, charts, drag-and-drop)
-- **Network Designer**: Home page mounts `NetworkDesigner` canvas and toolbars for topology/flow modeling
-- **Example page**: WebSocket echo demo at `/examples/websocket`
+## ✨ Core Features
 
-## Tech stack
-- **Framework**: Next.js 15, React 19
-- **Language**: TypeScript 5
-- **Styling**: Tailwind CSS 4, tailwindcss-animate
-- **UI**: shadcn/ui (Radix UI), lucide-react
-- **State & data**: Zustand, TanStack Query, Axios
-- **Forms & validation**: React Hook Form, Zod
-- **Visualization**: Recharts, react-resizable-panels, DnD Kit
-- **Backend & DB**: Custom `server.ts` (HTTP + Socket.IO), Prisma
+### 🧠 AI-Powered Network Generator
+- **One-Click Architecture Generation**: Automatically generate professional network architecture solutions based on business requirements using AI technology
+- **Smart Topology Design**: Support various network topology structures including star, mesh, and tree configurations
+- **Automated IP Planning**: Intelligent IP address allocation with automatic subnet and VLAN planning
+- **Device Recommendations**: Recommend optimal network devices based on budget and performance requirements
+- **Configuration Auto-Generation**: Generate network device configurations following best practices
 
-## Project structure (excerpt)
-```
-src/
-  app/                 # Next.js App Router pages
-  components/          # Reusable components
-    ui/                # shadcn/ui components
-    network-designer/  # Network designer components
-  hooks/               # Custom hooks
-  lib/                 # Utilities & configs (db, socket, etc.)
-examples/
-  websocket/           # WebSocket demo page
-server.ts              # Custom server (Next.js + Socket.IO)
-```
+### 🔧 Device Management Center
+- **Multi-Vendor Support**: Compatible with mainstream vendors including Cisco, Huawei, H3C, and more
+- **Bulk Configuration Management**: Batch device configuration deployment, backup, and version control
+- **Real-Time Monitoring**: Live device status monitoring with performance metrics visualization
+- **Configuration Templates**: Built-in common configuration templates with custom template support
+- **Automation Scripts**: Integrated Python script execution for operations automation
 
-## Getting started
-1) Install dependencies
-```bash
-npm install
-```
+### 🤖 AI Network Troubleshoting Assistant
+- **Intelligent Fault Diagnosis**: Describe network issues and receive AI-powered analysis and troubleshooting guidance
+- **Problem Pattern Recognition**: Identify common network issue patterns based on historical data
+- **Solution Recommendations**: Provide step-by-step problem resolution procedures
+- **Knowledge Base Integration**: Access network troubleshooting knowledge base for quick solutions
+- **History Management**: Save troubleshooting history and build problem resolution archives
 
-2) Development
-```bash
-npm run dev
-# Launches custom server (Next + Socket.IO) at http://localhost:3000
-```
+### 📊 Packet Capture & Analysis
+- **Real-Time Traffic Capture**: Support multi-interface simultaneous packet capture with real-time network traffic monitoring
+- **Intelligent Traffic Analysis**: AI-powered analysis of network traffic patterns to identify anomalous behavior
+- **Performance Diagnostics**: Analyze network performance issues and identify bottlenecks
+- **Security Detection**: Identify potential security threats and abnormal traffic patterns
+- **Visual Reports**: Generate intuitive traffic analysis reports and charts
 
-3) Production build and start
-```bash
-npm run build
-npm start
-```
-- Production runs via `server.ts` on `0.0.0.0:3000`
-- Socket.IO path: `/api/socketio`
-- Windows note: the `start` script sets env var in POSIX style. If it fails, run in PowerShell:
-```powershell
-$env:NODE_ENV = 'production'; tsx server.ts
-```
-or in cmd:
-```cmd
-set NODE_ENV=production&& tsx server.ts
-```
+## 🎯 Use Cases
 
-## Database (optional)
-Prisma client is available at `src/lib/db.ts`. To enable DB features:
-- Configure `DATABASE_URL` (e.g., in `.env`)
-- Push/generate schema:
-```bash
-npm run db:generate
-npm run db:push
-# or for development migrations: npm run db:migrate
-```
+### Network Design Phase
+- New network architecture design
+- Network upgrade and migration planning
+- Business requirement analysis and architecture planning
+- Device selection and budget evaluation
 
-## WebSocket demo
-- Route: `/examples/websocket`
-- Server initialization: `src/lib/socket.ts`
-- Client uses `socket.io-client` with `path: '/api/socketio'`
+### Daily Operations Management
+- Centralized network device management
+- Bulk configuration deployment and updates
+- Device performance monitoring and alerting
+- Automated operational task execution
 
-## Available scripts
-```json
-"dev":   "nodemon --exec \"npx tsx server.ts\" --watch server.ts --watch src --ext ts,tsx,js,jsx 2>&1 | tee dev.log",
-"build": "next build",
-"start": "NODE_ENV=production tsx server.ts 2>&1 | tee server.log",
-"lint":  "next lint",
-"db:push":     "prisma db push",
-"db:generate": "prisma generate",
-"db:migrate":  "prisma migrate dev",
-"db:reset":    "prisma migrate reset"
-```
+### Troubleshooting & Problem Resolution
+- Network connectivity issue diagnosis
+- Performance problem root cause analysis
+- Security incident investigation
+- Complex network problem localization
 
-## Deployment notes
-- Build with `npm run build`, then run `npm start` to serve both Next.js and Socket.IO via the custom server.
-- Production checklist:
-  - Set `NODE_ENV=production`
-  - Configure `DATABASE_URL` if you use the database
-  - Expose port 3000 or your custom port and configure reverse proxy as needed
+### Network Traffic Analysis
+- Network performance optimization
+- Abnormal traffic detection
+- Network security monitoring
+- Business traffic analysis
 
-## License
-No specific license is included. Add a license file appropriate for your project. 
+## 🌟 Key Advantages
+
+### High Intelligence Level
+- AI-driven network design and problem diagnosis
+- Intelligent recommendation of optimal solutions
+- High automation level reducing manual operations
+
+### User-Friendly Interface
+- Modern web interface with intuitive operations
+- Modular design with clear functionality
+- Wizard-based workflow, beginner-friendly
+
+### Comprehensive Integration
+- Covers all aspects of network engineer daily work
+- One-stop solution for network operations needs
+- Eliminates tool switching, improves efficiency
+
+### Professional Grade
+- Designed based on network engineering best practices
+- Supports mainstream vendor devices and protocols
+- Suitable for various scales of network environments
+
+## 🚀 Getting Started
+
+1. **Project Management Module**: Quick network architecture generation
+2. **Device Management Module**: Manage and monitor network devices
+3. **AI Troubleshooting Module**: Intelligent network problem diagnosis
+4. **Packet Analysis Module**: Deep network traffic analysis
+
+## 📋 Supported Scenarios
+
+- Enterprise campus network design and management
+- Data center network architecture planning
+- Campus network construction and maintenance
+- SME network operations
+- Network emergency troubleshooting
+- Network security monitoring and analysis
+
+---
+
+> This platform aims to be the trusted assistant for network engineers, making network engineering work more efficient, professional, and intelligent through AI technology and automation tools. 

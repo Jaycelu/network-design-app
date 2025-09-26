@@ -1,59 +1,79 @@
-// Test script to verify packet capture file handling
-const fs = require('fs');
-const path = require('path');
-
-// Check if temp directory exists
-const tempDir = path.join(__dirname, 'temp');
-console.log('Temp directory path:', tempDir);
-console.log('Temp directory exists:', fs.existsSync(tempDir));
-
-if (fs.existsSync(tempDir)) {
-  // List all pcap files in temp directory
-  const files = fs.readdirSync(tempDir).filter(file => file.endsWith('.pcap'));
-  console.log('PCAP files in temp directory:', files);
-  
-  // Show details of each file
-  files.forEach(file => {
-    const filePath = path.join(tempDir, file);
-    const stats = fs.statSync(filePath);
-    console.log(`File: ${file}`);
-    console.log(`  Size: ${stats.size} bytes`);
-    console.log(`  Modified: ${stats.mtime}`);
-    console.log(`  Full path: ${filePath}`);
-  });
-} else {
-  console.log('Creating temp directory...');
-  fs.mkdirSync(tempDir, { recursive: true });
-  console.log('Temp directory created');
-}
-
-// Test the API endpoints
+// 测试抓包功能修复
 const axios = require('axios');
 
-async function testAPIs() {
+const API_BASE = 'http://127.0.0.1:3005/api/packet-capture';
+
+async function testCapture() {
   try {
-    console.log('\n=== Testing API Endpoints ===');
+    console.log('🧪 开始测试抓包功能...');
     
-    // Test interfaces endpoint
-    console.log('Testing /api/packet-capture/interfaces...');
-    const interfacesResponse = await axios.get('http://localhost:3005/api/packet-capture/interfaces');
-    console.log('Interfaces response:', interfacesResponse.data);
+    // 1. 开始抓包
+    console.log('📡 开始抓包...');
+    const startResponse = await axios.post(`${API_BASE}/start`, {
+      interface: 'auto_detect',
+      duration: 10
+    });
     
-    // Test stats endpoint (with dummy session)
-    console.log('\nTesting /api/packet-capture/stats...');
+    console.log('开始抓包响应:', startResponse.data);
+    const sessionId = startResponse.data.sessionId;
+    
+    if (!sessionId) {
+      console.error('❌ 未获取到会话ID');
+      return;
+    }
+    
+    // 2. 等待抓包进行
+    console.log('⏳ 等待抓包进行...');
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    // 3. 获取统计信息
+    console.log('📊 获取抓包统计...');
     try {
-      const statsResponse = await axios.post('http://localhost:3005/api/packet-capture/stats', {
-        sessionId: 'test_session'
-      });
-      console.log('Stats response:', statsResponse.data);
+      const statsResponse = await axios.get(`${API_BASE}/stats`);
+      console.log('统计信息:', statsResponse.data);
     } catch (error) {
-      console.log('Stats error (expected for dummy session):', error.response?.data || error.message);
+      console.log('统计信息获取失败:', error.message);
+    }
+    
+    // 4. 停止抓包
+    console.log('🛑 停止抓包...');
+    const stopResponse = await axios.post(`${API_BASE}/stop`, {
+      sessionId: sessionId
+    });
+    
+    console.log('停止抓包响应:', stopResponse.data);
+    
+    // 5. 验证文件是否存在
+    if (stopResponse.data.success && stopResponse.data.filePath) {
+      const fs = require('fs');
+      const path = stopResponse.data.filePath;
+      
+      console.log(`🔍 检查文件是否存在: ${path}`);
+      
+      // 等待一下确保文件写入完成
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      if (fs.existsSync(path)) {
+        const stats = fs.statSync(path);
+        console.log(`✅ 文件存在! 大小: ${stats.size} 字节`);
+        
+        if (stats.size > 0) {
+          console.log('🎉 抓包文件保存成功!');
+        } else {
+          console.log('⚠️  文件存在但大小为0');
+        }
+      } else {
+        console.log('❌ 文件不存在');
+      }
     }
     
   } catch (error) {
-    console.error('API test failed:', error.message);
+    console.error('测试失败:', error.message);
+    if (error.response) {
+      console.error('错误响应:', error.response.data);
+    }
   }
 }
 
-// Run the test
-testAPIs();
+// 运行测试
+testCapture();

@@ -25,9 +25,9 @@ export async function POST(request: NextRequest) {
     const now = new Date();
     const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
     // 清理接口名称，移除特殊字符和空格
-    const cleanInterfaceName = interfaceName.replace(/[^a-zA-Z0-9()]/g, '');
+    const cleanInterfaceName = (interfaceName || 'auto').replace(/[^a-zA-Z0-9()]/g, '');
     const fileName = `${cleanInterfaceName}_${timestamp}.pcap`;
-    const outputFile = path.join(tempDir, fileName);
+    const outputFile = path.join(tempDir, fileName); // 传递完整路径给Python脚本
     
     console.log(`开始抓包会话: ${sessionId}, 接口: ${interfaceToUse}, 输出文件: ${outputFile}`);
     
@@ -69,9 +69,28 @@ export async function POST(request: NextRequest) {
             // 抓包完成
             console.log(`抓包完成: ${parsed.packet_count} 个包, ${parsed.total_size} 字节`);
           } else if (parsed.type === 'file_saved') {
-            console.log(`PCAP文件已保存: ${parsed.file_path}`);
+            console.log(`PCAP文件已保存: ${parsed.file_path}, 大小: ${parsed.file_size} 字节`);
             // 更新输出文件路径，确保使用实际保存的文件路径
             capture.outputFile = parsed.file_path;
+            // 同时更新统计数据
+            if (parsed.packet_count !== undefined) {
+              capture.stats.packets = parsed.packet_count;
+            }
+            if (parsed.file_size !== undefined) {
+              capture.stats.totalSize = parsed.file_size;
+            }
+            // 输出确认信息，便于调试
+            console.log(`更新会话文件信息: ${sessionId}, 路径: ${capture.outputFile}, 大小: ${capture.stats.totalSize}`);
+          } else if (parsed.type === 'file_updated') {
+            console.log(`PCAP文件已更新: ${parsed.file_path}, 大小: ${parsed.file_size} 字节`);
+            // 更新统计数据
+            if (parsed.packet_count !== undefined) {
+              capture.stats.packets = parsed.packet_count;
+            }
+            if (parsed.file_size !== undefined) {
+              capture.stats.totalSize = parsed.file_size;
+            }
+            console.log(`实时更新文件信息: ${sessionId}, 数据包: ${capture.stats.packets}, 大小: ${capture.stats.totalSize}`);
           } else if (parsed.type === 'driver_error') {
             // Npcap驱动错误
             console.error('Npcap驱动错误:', parsed.message);
