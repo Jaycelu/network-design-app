@@ -1,9 +1,4 @@
 import axios from 'axios'
-import { config } from 'dotenv'
-import path from 'path'
-
-// 加载环境变量
-config({ path: path.resolve(__dirname, '../../.env.local') })
 
 // AI模型配置
 const AI_MODEL_PROVIDER = process.env.AI_MODEL_PROVIDER || process.env.NEXT_PUBLIC_AI_MODEL_PROVIDER || 'AIHUBMIX'
