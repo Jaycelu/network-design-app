@@ -17,7 +17,7 @@ A comprehensive network operations platform designed for network engineers, feat
 
 - 🧠 **AI智能网络生成器** | AI-Powered Network Generator
 - 🔧 **设备管理中心** | Device Management Center  
-- 🤖 **AI网络排错助手** | AI Troubleshooting Assistant
+- 🤖 **NetGPT** | AI Troubleshooting Assistant
 - 📊 **数据包抓包分析** | Packet Capture & Analysis
 - 💬 **AI智能聊天** | AI Intelligent Chat
 - 🔌 **实时WebSocket通信** | Real-time WebSocket Communication

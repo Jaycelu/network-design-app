@@ -33,7 +33,7 @@ export function AITroubleshooting({ onBackToMain }: AITroubleshootingProps) {
             <ArrowLeft className="w-4 h-4" />
             返回主界面
           </Button>
-          <h2 className="text-2xl font-bold">AI网络排错助手</h2>
+          <h2 className="text-2xl font-bold">NetGPT</h2>
         </div>
         <p className="text-muted-foreground">描述您遇到的网络问题，AI将为您提供专业的排错指导</p>
       </div>

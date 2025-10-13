@@ -112,8 +112,8 @@ export function MainDashboard({ onModuleSelect }: MainDashboardProps) {
 
           {/* AI Troubleshooting Module */}
           <ModuleCard
-            title="AI排错"
-            description="基于AI的网络故障诊断与解决方案"
+            title="NetGPT"
+            description="与NetGPT对话，解决您的网络问题"
             icon={<Activity className="w-8 h-8 text-primary" />}
             badge="AI智能"
             features={[

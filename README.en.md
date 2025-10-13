@@ -18,7 +18,7 @@ A comprehensive network operations platform designed specifically for network en
 - **Configuration Templates**: Built-in common configuration templates with custom template support
 - **Automation Scripts**: Integrated Python script execution for operations automation
 
-### 🤖 AI Network Troubleshoting Assistant
+### 🤖 NetGPT
 - **Intelligent Fault Diagnosis**: Describe network issues and receive AI-powered analysis and troubleshooting guidance
 - **Problem Pattern Recognition**: Identify common network issue patterns based on historical data
 - **Solution Recommendations**: Provide step-by-step problem resolution procedures

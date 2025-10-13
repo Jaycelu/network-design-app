@@ -35,7 +35,7 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
     {
       id: '1',
       role: 'assistant',
-      content: '您好！我是您的AI网络运维助手，可以帮助您解决网络运维问题。请描述您遇到的网络问题，比如设备故障、网络连接问题等。',
+      content: '您好！我是NetGPT，您的AI网络运维助手，可以帮助您解决网络运维问题。请描述您遇到的网络问题，比如设备故障、网络连接问题等。',
       timestamp: new Date()
     }
   ])
@@ -177,7 +177,7 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
       {
         id: '1',
         role: 'assistant',
-        content: '您好！我是您的AI网络运维助手，可以帮助您解决网络运维问题。请描述您遇到的网络问题，比如设备故障、网络连接问题等。',
+        content: '您好！我是NetGPT，您的AI网络运维助手，可以帮助您解决网络运维问题。请描述您遇到的网络问题，比如设备故障、网络连接问题等。',
         timestamp: new Date()
       }
     ])
@@ -255,7 +255,7 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
             height={24} 
             className="rounded"
           />
-          <h3 className="text-xl font-semibold">AI网络运维助手</h3>
+          <h3 className="text-xl font-semibold">NetGPT</h3>
         </div>
         <div className="flex gap-2">
           <Button
