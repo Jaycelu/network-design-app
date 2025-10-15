@@ -183,6 +183,15 @@ type Device = {
   vendorSpecific?: VendorSpecificProperties; // 厂商特定属性
 };
 
+// 备份文件类型定义
+type BackupFile = {
+  id: string;
+  deviceName: string;
+  filename: string;
+  ipAddress: string;
+  backupTime: string;
+};
+
 // 子模块类型定义
 type SubModule = {
   id: string;
@@ -434,6 +443,14 @@ export function DeviceManagement({ onBackToMain }: { onBackToMain: () => void })
       }
     },
   ]);
+
+  // 备份文件状态
+  const [backupFiles, setBackupFiles] = useState<BackupFile[]>([
+    { id: 'bak-1', deviceName: '核心交换机01', filename: 'core-sw-01_20251015.cfg', ipAddress: '192.168.1.1', backupTime: '2025-10-15 10:30:00' },
+    { id: 'bak-2', deviceName: '边界路由器01', filename: 'border-rtr-01_20251015.cfg', ipAddress: '192.168.1.2', backupTime: '2025-10-15 10:32:00' },
+    { id: 'bak-3', deviceName: '防火墙01', filename: 'firewall-01_20251014.cfg', ipAddress: '192.168.1.3', backupTime: '2025-10-14 23:00:00' },
+    { id: 'bak-4', deviceName: '接入交换机01', filename: 'access-sw-01_20251013.cfg', ipAddress: '192.168.10.1', backupTime: '2025-10-13 18:00:00' },
+  ]);
   
   // Dnd-kit 传感器
   const sensors = useSensors(
@@ -589,6 +606,7 @@ export function DeviceManagement({ onBackToMain }: { onBackToMain: () => void })
   
   // 组管理筛选状态
   const [groupFilter, setGroupFilter] = useState('');
+  const [backupFilter, setBackupFilter] = useState('');
   
   // 设备搜索防抖
   const debouncedDeviceSearch = useDebounce(filter.name, 300);

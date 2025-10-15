@@ -121,21 +121,19 @@ export function UserSettingsDialog({ children }: { children: React.ReactNode }) 
               <div>
                 <h3 className="text-lg font-medium">文件存储路径</h3>
                 <p className="text-sm text-muted-foreground">
-                  设置抓包文件和项目配置的默认存储位置。
+                  应用各模块的默认文件存储位置。
                 </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="pcap-path">抓包文件目录</Label>
                 <div className="flex items-center space-x-2">
-                  <Input id="pcap-path" value={pcapPath} readOnly placeholder="未设置路径" />
-                  <Button variant="outline" onClick={() => handleSelectFolder('pcap')}>浏览...</Button>
+                  <Input id="pcap-path" value="[...]/temp" readOnly placeholder="应用的临时文件目录" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="backup-path">项目备份目录</Label>
+                <Label htmlFor="backup-path">配置备份目录</Label>
                 <div className="flex items-center space-x-2">
-                  <Input id="backup-path" value={backupPath} readOnly placeholder="未设置路径" />
-                  <Button variant="outline" onClick={() => handleSelectFolder('backup')}>浏览...</Button>
+                  <Input id="backup-path" value="[...]/backups/configs" readOnly placeholder="设备配置文件备份目录" />
                 </div>
               </div>
             </div>
