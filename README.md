@@ -9,6 +9,20 @@
 
 ---
 
+## 🎯 项目简介 | Project Overview
+
+一个为网络工程师量身打造的智能化网络运维平台，集成了：
+
+A comprehensive network operations platform designed for network engineers, featuring:
+
+- 🧠 **AI智能网络生成器** | AI-Powered Network Generator
+- 🔧 **设备管理中心** | Device Management Center  
+- 🤖 **NetGPT** | AI Troubleshooting Assistant
+- 📊 **数据包抓包分析** | Packet Capture & Analysis
+- 💬 **AI智能聊天** | AI Intelligent Chat
+- 🔌 **实时WebSocket通信** | Real-time WebSocket Communication
+
+---
 ## 🚀 快速开始 | Quick Start
 
 ```bash
