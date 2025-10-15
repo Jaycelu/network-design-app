@@ -19,6 +19,33 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  apiKeys UserAPIKey[]
+}
+
+model AIProvider {
+  id         String       @id @default(cuid())
+  name       String // e.g., "Google Gemini", "OpenAI GPT-4"
+  modelId    String       @unique // e.g., "gemini-1.5-pro", "gpt-4o" - 用于API调用
+  provider   String // e.g., "google", "openai", "anthropic" - 用于选择适配器
+  apiKeyEnv  String // 存储指向API Key的环境变量名, e.g., "GOOGLE_API_KEY"
+  baseUrlEnv String? // 可选，指向API基础URL的环境变量名
+  isEnabled  Boolean      @default(true) // 是否对用户可见
+
+  // 关联到用户自定义的API Key
+  userApiKeys UserAPIKey[]
+}
+
+// 用于存储用户自定义的 API Key
+model UserAPIKey {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  providerId String
+  provider   AIProvider @relation(fields: [providerId], references: [id])
+  apiKey     String // 注意：这里需要加密存储！
+
+  @@unique([userId, providerId])
 }
 
 model Post {

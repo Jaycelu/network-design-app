@@ -1,21 +1,11 @@
-import axios from 'axios'
+import { getAIAdapter } from '@/lib/ai/AIFactory';
+import { Message } from '@/lib/ai/AIBaseAdapter';
 
-// AI模型配置
-const AI_MODEL_PROVIDER = process.env.AI_MODEL_PROVIDER || process.env.NEXT_PUBLIC_AI_MODEL_PROVIDER || 'AIHUBMIX'
-const AI_MODEL = process.env.AI_MODEL || process.env.NEXT_PUBLIC_AI_MODEL || 'gpt-4o-mini' // 默认使用gpt-4o-mini作为后备
-const AIHUBMIX_API_KEY = process.env.AIHUBMIX_API_KEY || process.env.NEXT_PUBLIC_AIHUBMIX_API_KEY || ''
+// 默认模型ID
+const DEFAULT_MODEL_ID = 'gpt-4o-mini';
 
-console.log('AI环境变量检查:')
-console.log('NEXT_PUBLIC_AI_MODEL_PROVIDER:', process.env.NEXT_PUBLIC_AI_MODEL_PROVIDER)
-console.log('AI_MODEL_PROVIDER:', process.env.AI_MODEL_PROVIDER)
-console.log('NEXT_PUBLIC_AI_MODEL:', process.env.NEXT_PUBLIC_AI_MODEL)
-console.log('AI_MODEL:', process.env.AI_MODEL)
-console.log('NEXT_PUBLIC_AIHUBMIX_API_KEY:', process.env.NEXT_PUBLIC_AIHUBMIX_API_KEY)
-console.log('AIHUBMIX_API_KEY:', process.env.AIHUBMIX_API_KEY)
-console.log('最终使用的AIHUBMIX_API_KEY:', AIHUBMIX_API_KEY)
-
-// AIHUBMIX API配置
-const AIHUBMIX_API_BASE = 'https://aihubmix.com/v1'
+// 占位符用户ID（在实际应用中应该从会话中获取）
+const PLACEHOLDER_USER_ID = 'cl-placeholder-user-id';
 
 // AI错误处理
 class AIError extends Error {
@@ -30,21 +20,49 @@ class AIError extends Error {
  */
 export async function analyzeStockWithAI(
   stockData: any,
-  analysisResult: any
+  analysisResult: any,
+  modelId: string = DEFAULT_MODEL_ID
 ): Promise<string> {
   try {
     console.log('开始AI分析...')
     // 构造专业的股票分析提示词
     const prompt = createProfessionalAnalysisPrompt(stockData, analysisResult)
     
-    // 调用AI模型
-    const response = await callAIModel(prompt)
+    // 使用AI工厂获取适配器
+    const adapter = await getAIAdapter(modelId, PLACEHOLDER_USER_ID);
     
-    return response
-  } catch (error) {
+    // 构造消息
+    const messages: Message[] = [
+      {
+        role: 'system',
+        content: '你是一位专业的股票投资分析师，拥有丰富的投资经验和深厚的金融知识。'
+      },
+      {
+        role: 'user',
+        content: prompt
+      }
+    ];
+    
+    // 调用AI模型
+    const response = await adapter.createChatCompletion({
+      model: modelId,
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 800
+    }) as any;
+    
+    // 检查响应格式
+    if (response && response.choices && response.choices.length > 0) {
+      const result = response.choices[0].message.content.trim();
+      console.log(`AI模型响应成功，返回长度: ${result.length}`)
+      return result;
+    } else {
+      console.error('AI模型响应格式不正确:', response)
+      return 'AI分析失败，响应格式不正确。';
+    }
+  } catch (error: any) {
     console.error('AI分析失败:', error)
-    // 返回默认分析而不是抛出错误
-    return 'AI分析暂时不可用，请稍后再试。'
+    return `AI分析失败: ${error.message || '未知错误'}`;
   }
 }
 
@@ -147,129 +165,7 @@ function createProfessionalAnalysisPrompt(stockData: any, analysisResult: any): 
 请开始分析：`
 }
 
-/**
- * 调用AI模型
- */
-async function callAIModel(prompt: string): Promise<string> {
-  // 检查API密钥
-  if (!AIHUBMIX_API_KEY) {
-    console.warn('警告: AIHUBMIX_API_KEY 未配置，将返回默认分析')
-    return 'AI分析暂时不可用，因为API密钥未配置。'
-  }
 
-  try {
-    console.log(`准备调用AI模型: ${AI_MODEL}`)
-    console.log(`API密钥状态: ${AIHUBMIX_API_KEY ? '已配置' : '未配置'}`)
-    
-    // 首先尝试使用配置的模型
-    try {
-      const response = await axios.post(
-        `${AIHUBMIX_API_BASE}/chat/completions`,
-        {
-          model: AI_MODEL,
-          messages: [
-            {
-              role: 'system',
-              content: '你是一位专业的股票投资分析师，拥有丰富的投资经验和深厚的金融知识。'
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 800
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${AIHUBMIX_API_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      )
-
-      console.log(`AI模型响应状态: ${response.status}`)
-      
-      // 检查响应格式
-      if (response.data && response.data.choices && response.data.choices.length > 0) {
-        const result = response.data.choices[0].message.content.trim()
-        console.log(`AI模型响应成功，返回长度: ${result.length}`)
-        return result
-      } else {
-        console.error('AI模型响应格式不正确:', response.data)
-        throw new AIError('AI模型响应格式不正确')
-      }
-    } catch (primaryError: any) {
-      // 如果主模型调用失败，记录错误并尝试使用后备模型
-      console.error(`主模型 ${AI_MODEL} 调用失败:`, primaryError.message)
-      
-      // 如果配置的模型不是gpt-4o-mini，则尝试使用作为后备
-      if (AI_MODEL !== 'gpt-4o-mini') {
-        console.log('尝试使用后备模型 gpt-4o-mini')
-        const fallbackResponse = await axios.post(
-          `${AIHUBMIX_API_BASE}/chat/completions`,
-          {
-            model: 'gpt-4o-mini',
-            messages: [
-              {
-                role: 'system',
-                content: '你是一位专业的股票投资分析师，拥有丰富的投资经验和深厚的金融知识。'
-              },
-              {
-                role: 'user',
-                content: prompt
-              }
-            ],
-            temperature: 0.7,
-            max_tokens: 800
-          },
-          {
-            headers: {
-              'Authorization': `Bearer ${AIHUBMIX_API_KEY}`,
-              'Content-Type': 'application/json'
-            }
-          }
-        )
-        
-        if (fallbackResponse.data && fallbackResponse.data.choices && fallbackResponse.data.choices.length > 0) {
-          const result = fallbackResponse.data.choices[0].message.content.trim()
-          console.log(`后备模型响应成功，返回长度: ${result.length}`)
-          return result
-        }
-      }
-      
-      // 如果所有模型都失败，重新抛出错误
-      throw primaryError
-    }
-  } catch (error: any) {
-    console.error('=== AI模型调用详细错误信息 ===')
-    console.error('AI模型:', AI_MODEL)
-    console.error('API地址:', AIHUBMIX_API_BASE)
-    
-    if (error.response) {
-      console.error(`AI模型调用失败: ${error.response.status}`)
-      console.error('响应头:', error.response.headers)
-      console.error('响应数据:', error.response.data)
-      
-      const errorMessage = error.response.data?.error?.message || error.response.data || error.message
-      console.error(`错误消息: ${errorMessage}`)
-      
-      throw new AIError(
-        `AI模型调用失败: ${error.response.status} - ${errorMessage}`,
-        error.response.status
-      )
-    } else if (error.request) {
-      console.error('无响应 received')
-      console.error('请求详情:', error.request)
-      console.error(`错误消息: ${error.message}`)
-      throw new AIError(`AI模型调用失败: 无响应 - ${error.message}`)
-    } else {
-      console.error(`请求配置错误: ${error.message}`)
-      console.error('错误堆栈:', error.stack)
-      throw new AIError(`AI模型调用失败: 请求配置错误 - ${error.message}`)
-    }
-  }
-}
 
 /**
  * 获取信号描述

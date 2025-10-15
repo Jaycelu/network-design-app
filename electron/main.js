@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const os = require('os');
@@ -14,6 +14,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
     },
     show: true, // 确保窗口可见
   });
@@ -75,6 +76,20 @@ function createWindow() {
 // 当 Electron 完成初始化并准备创建浏览器窗口时调用此方法
 app.whenReady().then(() => {
   console.log('Electron 应用已准备就绪');
+
+  // 设置内容安全策略 (CSP)
+  const { session } = require('electron');
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws://localhost:3005 https://www.jaycelu.online"
+        ]
+      }
+    });
+  });
+
   createWindow();
 
   app.on('activate', () => {
@@ -121,4 +136,15 @@ ipcMain.handle('get-network-interfaces', async () => {
     console.error('获取网络接口信息失败:', error);
     return [];
   }
+});
+
+// 处理打开文件夹选择对话框的请求
+ipcMain.handle('dialog:openFolder', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
+  if (!canceled && filePaths.length > 0) {
+    return filePaths[0];
+  }
+  return null;
 });

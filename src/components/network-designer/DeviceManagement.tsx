@@ -55,7 +55,6 @@ import {
   Network
 } from 'lucide-react';
 
-import { ThemeToggle } from '@/components/network-designer/ThemeToggle';
 import { useDebounce } from '@/hooks/use-debounce';
 import { VendorIcon } from '@/components/network-designer/VendorIcon';
 import { VendorSpecificManagement } from '@/components/network-designer/VendorSpecificManagement';
@@ -451,7 +450,6 @@ export function DeviceManagement({ onBackToMain }: { onBackToMain: () => void })
   const [subModules, setSubModules] = useState<SubModule[]>([
     { id: 'group-management', name: '组管理', icon: <Server className="w-4 h-4" /> },
     { id: 'device-list', name: '设备列表', icon: <HardDrive className="w-4 h-4" /> },
-    { id: 'network-interfaces', name: '网卡信息', icon: <Network className="w-4 h-4" /> },
     { id: 'backup-management', name: '备份管理', icon: <Database className="w-4 h-4" /> },
     { id: 'config-management', name: '配置管理', icon: <FileText className="w-4 h-4" /> },
   ]);
@@ -1395,140 +1393,6 @@ export function DeviceManagement({ onBackToMain }: { onBackToMain: () => void })
             </DndContext>
           </>
         );
-      case 'backup-management':
-        return (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">备份管理</h3>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  <Upload className="w-4 h-4 mr-2" />
-                  导入
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  导出
-                </Button>
-              </div>
-            </div>
-            <p className="text-muted-foreground">备份管理功能正在开发中...</p>
-          </div>
-        );
-      case 'network-interfaces':
-        return (
-          <div className="space-y-4 h-full flex flex-col">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">网卡信息</h3>
-              <div className="flex items-center gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    // 重新加载网卡信息
-                    setLoadingNetworkInterfaces(true);
-                    setTimeout(() => {
-                      // 模拟重新加载
-                      setLoadingNetworkInterfaces(false);
-                    }, 500);
-                  }}
-                >
-                  刷新
-                </Button>
-              </div>
-            </div>
-            
-            {loadingNetworkInterfaces ? (
-              <div className="flex justify-center items-center h-full">
-                <div className="text-center">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mb-2"></div>
-                  <p className="text-muted-foreground">正在获取网卡信息...</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex-1 overflow-auto rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50 hover:bg-muted/50">
-                      <TableHead className="text-foreground">网卡名称</TableHead>
-                      <TableHead className="text-foreground">描述</TableHead>
-                      <TableHead className="text-foreground">IP 地址</TableHead>
-                      <TableHead className="text-foreground">子网掩码</TableHead>
-                      <TableHead className="text-foreground">MAC 地址</TableHead>
-                      <TableHead className="text-foreground">类型</TableHead>
-                      <TableHead className="text-foreground">状态</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {networkInterfaces.map((iface, index) => (
-                      <TableRow key={index} className="hover:bg-muted/30">
-                        <TableCell className="font-medium text-foreground">{cleanInterfaceName(iface.name)}</TableCell>
-                        <TableCell className="text-foreground/80">{iface.description || 'N/A'}</TableCell>
-                        <TableCell className="text-foreground/80">{iface.address || 'N/A'}</TableCell>
-                        <TableCell className="text-foreground/80">{iface.netmask || 'N/A'}</TableCell>
-                        <TableCell className="text-foreground/80">{iface.mac || 'N/A'}</TableCell>
-                        <TableCell className="text-foreground/80">{iface.family || 'N/A'}</TableCell>
-                        <TableCell className="text-foreground/80">
-                          <Badge variant={iface.internal ? "secondary" : "default"}>
-                            {iface.internal ? '内部' : '外部'}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {networkInterfaces.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center text-muted-foreground">
-                          未找到可用的网络接口
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-            
-            {/* 显示所有网卡的统计信息 */}
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle>网卡统计信息</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-primary/10 p-2 rounded-full">
-                      <Network className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">总网卡数</p>
-                      <p className="text-lg font-semibold">{allNetworkInterfaces.length}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="bg-green-500/10 p-2 rounded-full">
-                      <Network className="w-4 h-4 text-green-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">外部网卡</p>
-                      <p className="text-lg font-semibold">
-                        {allNetworkInterfaces.filter(iface => !iface.internal).length}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="bg-blue-500/10 p-2 rounded-full">
-                      <Network className="w-4 h-4 text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">内部网卡</p>
-                      <p className="text-lg font-semibold">
-                        {allNetworkInterfaces.filter(iface => iface.internal).length}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        );
       case 'config-management':
         return (
           <div>
@@ -1574,7 +1438,6 @@ export function DeviceManagement({ onBackToMain }: { onBackToMain: () => void })
               <Badge variant="secondary">专业工具</Badge>
             </div>
           </div>
-          <ThemeToggle />
         </div>
       </div>
       

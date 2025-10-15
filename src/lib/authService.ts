@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 // 服务器配置
-const API_BASE_URL = 'http://152.136.160.91:9528';
+const API_BASE_URL = 'https://www.jaycelu.online';
 
 // 用户数据类型
 export interface User {

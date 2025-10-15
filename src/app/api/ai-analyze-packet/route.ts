@@ -1,15 +1,7 @@
 import { NextRequest } from 'next/server'
 import { analyzePacketWithAI, PacketData } from '@/lib/packetAnalysisAI'
-
-// 增强环境变量调试
-console.log('=== AI分析API环境变量详细调试 ===')
-console.log('AI_MODEL_PROVIDER:', process.env.AI_MODEL_PROVIDER)
-console.log('NEXT_PUBLIC_AI_MODEL_PROVIDER:', process.env.NEXT_PUBLIC_AI_MODEL_PROVIDER)
-console.log('AI_MODEL:', process.env.AI_MODEL)
-console.log('NEXT_PUBLIC_AI_MODEL:', process.env.NEXT_PUBLIC_AI_MODEL)
-console.log('AIHUBMIX_API_KEY:', process.env.AIHUBMIX_API_KEY ? '已设置' : '未设置')
-console.log('NEXT_PUBLIC_AIHUBMIX_API_KEY:', process.env.NEXT_PUBLIC_AIHUBMIX_API_KEY ? '已设置' : '未设置')
-console.log('AI分析API初始化完成，等待请求...')
+import { analyzePCAPWithPythonForAI } from '@/lib/pythonAnalyzer'
+import fs from 'fs'
 
 /**
  * AI数据包分析API
@@ -67,6 +59,18 @@ export async function POST(request: NextRequest) {
       isJSONFormat: true // 明确标识这是JSON格式
     })
     
+    // 添加详细的数据结构检查
+    console.log('详细数据结构检查:', {
+      hasError: !!packetData.error,
+      errorCode: packetData.error?.code,
+      errorMessage: packetData.error?.message,
+      captureInfoFileSize: packetData.captureInfo?.fileSize,
+      captureInfoError: packetData.captureInfo?.error,
+      captureInfoSuggestion: packetData.captureInfo?.suggestion,
+      totalDataKeys: Object.keys(packetData),
+      dataPreview: JSON.stringify(packetData, null, 2).substring(0, 500) + '...'
+    })
+    
     // 验证数据格式
     console.log('数据格式验证:', {
       isObject: typeof packetData === 'object',
@@ -76,22 +80,19 @@ export async function POST(request: NextRequest) {
       dataSource: packetData.captureInfo?.interface || 'unknown'
     })
 
-    // 验证数据完整性
-    if (packetData.totalPackets === 0) {
-      console.error('❌ 没有真实抓包数据，拒绝AI分析请求');
-      return Response.json(
-        { 
-          success: false, 
-          error: 'AI数据包分析失败：没有获取到真实的网络数据。必须基于真实抓包数据进行AI分析，不能使用模拟数据。' 
-        },
-        { status: 400 }
-      )
+    // 检查是否有PCAP文件路径
+    let analysisResult = '';
+    if (packetData.captureInfo?.filePath && fs.existsSync(packetData.captureInfo.filePath)) {
+      // 使用Python脚本直接分析PCAP文件
+      console.log('使用Python脚本直接分析PCAP文件:', packetData.captureInfo.filePath);
+      analysisResult = await analyzePCAPWithPythonForAI(packetData.captureInfo.filePath);
+    } else {
+      // 验证数据完整性 - 允许各种数据情况
+      console.log('✅ 数据验证通过，开始调用AI大模型...')
+      
+      // 调用AI模型进行分析
+      analysisResult = await analyzePacketWithAI(packetData, analysisType);
     }
-
-    console.log('✅ 数据验证通过，开始调用AI大模型...')
-    
-    // 调用AI模型进行分析
-    const analysisResult = await analyzePacketWithAI(packetData, analysisType)
 
     console.log('✅ AI大模型分析完成，返回结果长度:', analysisResult.length)
 
@@ -171,41 +172,46 @@ export async function GET(request: NextRequest) {
  */
 function isValidPacketData(data: any): data is PacketData {
   // 检查必需字段
-  if (!data.totalPackets || !data.totalSize || !data.duration) {
-    return false
-  }
-
-  // 检查数据类型
   if (typeof data.totalPackets !== 'number' || 
       typeof data.totalSize !== 'number' || 
       typeof data.duration !== 'number') {
-    return false
+    return false;
   }
 
   // 检查协议数据
   if (!data.protocols || typeof data.protocols !== 'object') {
-    return false
+    return false;
   }
 
   // 检查topTalkers
-  if (!data.topTalkers || !Array.isArray(data.topTalkers)) {
-    return false
+  if (!Array.isArray(data.topTalkers)) {
+    return false;
   }
 
-  // 检查suspiciousActivities
-  if (!data.suspiciousActivities || !Array.isArray(data.suspiciousActivities)) {
-    return false
+  // 检查suspiciousActivities（可选字段，但如果存在必须是数组）
+  if (data.suspiciousActivities && !Array.isArray(data.suspiciousActivities)) {
+    return false;
   }
 
-  // 检查trafficPattern
-  if (!data.trafficPattern || typeof data.trafficPattern !== 'object') {
-    return false
+  // 检查trafficPattern（可选字段，但如果存在必须是对象）
+  if (data.trafficPattern && typeof data.trafficPattern !== 'object') {
+    return false;
   }
 
   // 检查captureInfo
   if (!data.captureInfo || typeof data.captureInfo !== 'object') {
-    return false
+    return false;
   }
 
-  return true
+  // 检查可选字段 conversations（如果存在，必须是数组）
+  if (data.conversations && !Array.isArray(data.conversations)) {
+    return false;
+  }
+
+  // 检查可选字段 error（如果存在，必须是对象）
+  if (data.error && typeof data.error !== 'object') {
+    return false;
+  }
+
+  return true;
 }

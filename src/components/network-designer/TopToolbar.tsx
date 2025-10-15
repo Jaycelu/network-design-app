@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { 
   User, 
   Settings, 
-  CreditCard, 
   LogOut,
   ChevronDown,
   LogIn,
-  UserPlus
+  UserPlus,
+  Bot
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -23,6 +23,8 @@ import {
 import { LoginDialog } from './LoginDialog';
 import { RegisterDialog } from './RegisterDialog';
 import authService from '@/lib/authService';
+import { UserSettingsDialog } from './UserSettingsDialog';
+import { AIModelSettingsDialog } from './AIModelSettingsDialog';
 
 export function TopToolbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -84,14 +86,14 @@ export function TopToolbar() {
                 <Button 
                   variant="outline" 
                   onClick={() => setShowLoginDialog(true)} 
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-border/60 hover:border-border/80 hover:bg-accent/50 text-[var(--button-text-secondary)] hover:text-foreground transition-all duration-200 font-medium px-4 py-2 rounded-lg shadow-sm"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>登录</span>
                 </Button>
                 <Button 
                   onClick={() => setShowRegisterDialog(true)} 
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--button-text-primary)] transition-all duration-200 font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow-md"
                 >
                   <UserPlus className="w-4 h-4" />
                   <span>注册</span>
@@ -133,12 +135,12 @@ export function TopToolbar() {
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 hover:bg-accent rounded-full px-3 py-2">
+                  <Button variant="ghost" className="flex items-center gap-2 hover:bg-accent/60 rounded-full px-3 py-2 border border-transparent hover:border-border/60 transition-all duration-200">
                     <div className="bg-primary/10 p-2 rounded-full">
-                      <User className="w-4 h-4 text-primary" />
+                      <User className="w-4 h-4 text-[var(--primary)]" />
                     </div>
-                    <span className="hidden sm:inline font-medium">{user?.username}</span>
-                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    <span className="hidden sm:inline font-medium text-[var(--button-text-secondary)] hover:text-foreground">{user?.username}</span>
+                    <ChevronDown className="w-4 h-4 text-[var(--button-text-muted)]" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-64 p-2 rounded-xl shadow-lg">
@@ -148,23 +150,24 @@ export function TopToolbar() {
                       <p className="text-xs leading-none text-muted-foreground">
                         {user?.email}
                       </p>
-                      <Badge variant="secondary" className="w-fit mt-1">
-                        免费版 (Token: {user?.token_balance})
-                      </Badge>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="my-1" />
-                  <DropdownMenuItem className="rounded-lg p-2 cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>个人设置</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="rounded-lg p-2 cursor-pointer">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    <span>账单</span>
-                  </DropdownMenuItem>
+                  <UserSettingsDialog>
+                    <DropdownMenuItem className="rounded-lg p-2 cursor-pointer" onSelect={(e) => e.preventDefault()}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>个人设置</span>
+                    </DropdownMenuItem>
+                  </UserSettingsDialog>
+                  <AIModelSettingsDialog>
+                    <DropdownMenuItem className="rounded-lg p-2 cursor-pointer" onSelect={(e) => e.preventDefault()}>
+                      <Bot className="mr-2 h-4 w-4" />
+                      <span>AI模型设置</span>
+                    </DropdownMenuItem>
+                  </AIModelSettingsDialog>
                   <DropdownMenuSeparator className="my-1" />
                   <DropdownMenuItem 
-                    className="rounded-lg p-2 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                    className="rounded-lg p-2 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50/50 transition-colors duration-200"
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />

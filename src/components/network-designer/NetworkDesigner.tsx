@@ -6,16 +6,16 @@ import { AIIntegratedGenerator } from './AIIntegratedGenerator';
 import { PropertiesPanel } from './PropertiesPanel';
 import { CanvasArea } from './CanvasArea';
 import { DeviceManagement } from './DeviceManagement';
-import { AITroubleshooting } from './AITroubleshooting';
+import { NetGPT } from './NetGPT';
 import { PacketAnalysis } from './PacketAnalysis';
 
-type ViewMode = 'main' | 'project' | 'device' | 'ai-generator' | 'topology' | 'ai-troubleshooting' | 'report' | 'packet-analysis';
+type ViewMode = 'main' | 'project' | 'device' | 'ai-generator' | 'topology' | 'netgpt' | 'report' | 'packet-analysis';
 
 export function NetworkDesigner() {
   const [viewMode, setViewMode] = useState<ViewMode>('main');
   const [selectedNode, setSelectedNode] = useState<any>(null);
 
-  const handleModuleSelect = (module: 'project' | 'device' | 'ai-troubleshooting' | 'report') => {
+  const handleModuleSelect = (module: 'project' | 'device' | 'netgpt' | 'report') => {
     switch (module) {
       case 'project':
         setViewMode('ai-generator');
@@ -23,8 +23,8 @@ export function NetworkDesigner() {
       case 'device':
         setViewMode('device');
         break;
-      case 'ai-troubleshooting':
-        setViewMode('ai-troubleshooting');
+      case 'netgpt':
+        setViewMode('netgpt');
         break;
       case 'report':
         // Packet analysis module
@@ -53,8 +53,8 @@ export function NetworkDesigner() {
       case 'device':
         return <DeviceManagement onBackToMain={() => setViewMode('main')} />;
       
-      case 'ai-troubleshooting':
-        return <AITroubleshooting onBackToMain={() => setViewMode('main')} />;
+      case 'netgpt':
+        return <NetGPT onBackToMain={() => setViewMode('main')} />;
       
       case 'packet-analysis':
         return <PacketAnalysis onBackToMain={() => setViewMode('main')} />;

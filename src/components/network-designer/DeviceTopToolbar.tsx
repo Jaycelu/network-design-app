@@ -18,7 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ThemeToggle } from '@/components/network-designer/ThemeToggle';
 
 interface DeviceTopToolbarProps {
   onBack: () => void;
@@ -49,9 +48,6 @@ export function DeviceTopToolbar({ onBack }: DeviceTopToolbarProps) {
           </div>
           
           <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            <ThemeToggle />
-            
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -1,6 +1,3 @@
-'use client';
-
-import React from 'react';
 import { cn } from '@/lib/utils';
 import { Network, Settings, FileText, Layers, GitBranch, Activity, FolderOpen, Wand2 } from 'lucide-react';
 

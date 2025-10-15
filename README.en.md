@@ -18,7 +18,7 @@ A comprehensive network operations platform designed specifically for network en
 - **Configuration Templates**: Built-in common configuration templates with custom template support
 - **Automation Scripts**: Integrated Python script execution for operations automation
 
-### 🤖 AI Network Troubleshoting Assistant
+### 🤖 AI Network Troubleshooting Assistant
 - **Intelligent Fault Diagnosis**: Describe network issues and receive AI-powered analysis and troubleshooting guidance
 - **Problem Pattern Recognition**: Identify common network issue patterns based on historical data
 - **Solution Recommendations**: Provide step-by-step problem resolution procedures
@@ -40,6 +40,73 @@ A comprehensive network operations platform designed specifically for network en
 - **Visual Reports**: Generate intuitive traffic analysis reports and charts
 - **PCAP File Management**: Support PCAP file upload, download, and analysis
 - **Multi-Interface Support**: Auto-detect all network interfaces including wireless and wired
+
+## 🚀 Quick Start
+
+**Environment Requirements**
+- Node.js (v18 or newer)
+- npm / pnpm / yarn
+- Python (for packet analysis scripts)
+
+**Installation & Running**
+1.  Clone the project to your local machine.
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Configure the database (Prisma):
+    ```bash
+    # Configure your database connection in prisma/schema.prisma
+    # Push the database schema
+    npx prisma db push
+    ```
+4.  Start the web development server:
+    ```bash
+    npm run dev
+    ```
+5.  Start the desktop application in development mode:
+    ```bash
+    npm run desktop:dev
+    ```
+The application will be available at `http://localhost:3005`.
+
+## 🧭 Module Guide
+
+1. **Project Management Module**: Quick network architecture generation
+2. **Device Management Module**: Manage and monitor network devices
+3. **AI Troubleshooting Module**: Intelligent network problem diagnosis
+4. **Packet Analysis Module**: Deep network traffic analysis
+5. **AI Chat Module**: Intelligent conversation and knowledge Q&A
+6. **WebSocket Demo**: Real-time communication functionality showcase
+
+## 🔧 Technical Architecture
+
+### Frontend Technologies
+- **Next.js 15**: Modern React framework with App Router support
+- **TypeScript**: Type-safe JavaScript superset
+- **Tailwind CSS**: Utility-first CSS framework
+- **shadcn/ui**: Component library based on Radix UI
+- **React Flow**: For building network topology diagrams
+- **Zustand**: Lightweight state management library
+
+### Backend Technologies
+- **Node.js (Custom Server)**: Using a custom Next.js server with `server.ts`
+- **Socket.IO**: Real-time bidirectional communication
+- **Prisma**: Modern database ORM
+- **Python + Scapy**: For backend network packet capture and analysis
+
+### AI Integration
+- **z-ai-web-dev-sdk**: Integrates AI chat and analysis capabilities
+- **Network Analysis AI**: AI-driven network problem diagnosis
+- **Architecture Generation AI**: Intelligent network architecture design
+
+### Desktop Application
+- **Electron**: Build cross-platform desktop apps with web technologies
+
+### Data Storage
+- **PCAP File Management**: Storage for network capture files
+- **User Data Cache**: Local storage for user authentication information
+- **Project Data**: Storage for network design solutions
 
 ## 🎯 Use Cases
 
@@ -80,7 +147,7 @@ A comprehensive network operations platform designed specifically for network en
 - Wizard-based workflow, beginner-friendly
 
 ### Comprehensive Integration
-- Covers all aspects of network engineer daily work
+- Covers all aspects of a network engineer's daily work
 - One-stop solution for network operations needs
 - Eliminates tool switching, improves efficiency
 
@@ -89,48 +156,6 @@ A comprehensive network operations platform designed specifically for network en
 - Supports mainstream vendor devices and protocols
 - Suitable for various scales of network environments
 
-## 🚀 Getting Started
-
-1. **Project Management Module**: Quick network architecture generation
-2. **Device Management Module**: Manage and monitor network devices
-3. **AI Troubleshooting Module**: Intelligent network problem diagnosis
-4. **Packet Analysis Module**: Deep network traffic analysis
-5. **AI Chat Module**: Intelligent conversation and knowledge Q&A
-6. **WebSocket Demo**: Real-time communication functionality showcase
-
-## 🔧 Technical Architecture
-
-### Frontend Technologies
-- **Next.js 15**: Modern React framework with App Router support
-- **TypeScript**: Type-safe JavaScript superset
-- **Tailwind CSS**: Utility-first CSS framework
-- **shadcn/ui**: Component library based on Radix UI
-
-### Backend Technologies
-- **Node.js + Express**: High-performance JavaScript runtime
-- **Socket.IO**: Real-time bidirectional communication
-- **Prisma**: Modern database ORM
-- **Python + Scapy**: Network packet capture and analysis
-
-### AI Integration
-- **Intelligent Dialogue System**: AI-powered chat functionality
-- **Network Analysis AI**: AI-driven network problem diagnosis
-- **Architecture Generation AI**: Intelligent network architecture design
-
-### Data Storage
-- **PCAP File Management**: Network capture file storage
-- **User Data Cache**: Local storage of user authentication information
-- **Project Data**: Network design solution storage
-
-## 📋 Supported Scenarios
-
-- Enterprise campus network design and management
-- Data center network architecture planning
-- Campus network construction and maintenance
-- SME network operations
-- Network emergency troubleshooting
-- Network security monitoring and analysis
-
 ---
 
-> This platform aims to be the trusted assistant for network engineers, making network engineering work more efficient, professional, and intelligent through AI technology and automation tools. 
+> This platform aims to be the trusted assistant for network engineers, making network engineering work more efficient, professional, and intelligent through AI technology and automation tools.

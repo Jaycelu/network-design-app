@@ -307,6 +307,7 @@ export function PacketAnalysis({ onBackToMain }: { onBackToMain: () => void }) {
     }
     
     setIsAnalyzing(true);
+    setAnalysisResult(''); // 清除之前的分析结果
     
     try {
       console.log('开始PCAP转JSON分析流程，文件路径:', captureFile.path);
@@ -339,7 +340,7 @@ export function PacketAnalysis({ onBackToMain }: { onBackToMain: () => void }) {
         protocols: Object.keys(jsonData.protocols),
         topTalkersCount: jsonData.topTalkers.length,
         conversationsCount: jsonData.conversations?.length || 0,
-        toolUsed: jsonData.captureInfo.interface,
+        toolUsed: jsonData.captureInfo?.interface,
         dataType: 'JSON',
         jsonSize: JSON.stringify(jsonData).length
       });
@@ -354,24 +355,17 @@ export function PacketAnalysis({ onBackToMain }: { onBackToMain: () => void }) {
         isJSON: true
       });
       
-      // 第二步：验证是否有真实数据
-      if (jsonData.totalPackets === 0) {
-        console.log('⚠️ 没有获取到真实的网络数据，无法进行AI分析');
-        setAnalysisResult(`⚠️ 无法获取真实的网络数据
-
-原因：系统未安装网络分析工具（tshark/tcpdump），无法解析PCAP文件内容。
-
-当前状态：
-- PCAP文件大小：${(jsonData.captureInfo.fileSize / 1024).toFixed(2)} KB
-- 文件时间：${jsonData.captureInfo.createdTime}
-
-解决方案：
-1. 安装Wireshark（包含tshark）工具
-2. 重新进行抓包
-3. 确保抓包过程中有网络活动
-
-注意：AI分析必须基于真实的网络数据，不能进行模拟分析。`);
-        return;
+      // 检查数据并继续执行AI分析（不再提前返回错误）
+      if (jsonData.error) {
+        console.log('⚠️ 检测到错误，但仍继续执行AI分析:', jsonData.error);
+      }
+      
+      const hasRealData = jsonData.totalPackets > 0 || 
+                         Object.keys(jsonData.protocols).length > 0 || 
+                         jsonData.topTalkers.length > 0;
+                         
+      if (!hasRealData) {
+        console.log('⚠️ 没有获取到详细的网络数据，但仍将现有数据发送给AI分析');
       }
       
       // 第三步：使用JSON数据调用AI分析（不再使用旧的PCAP分析）
@@ -396,7 +390,9 @@ export function PacketAnalysis({ onBackToMain }: { onBackToMain: () => void }) {
       console.log('已发送JSON数据到AI分析API，等待响应...');
       
       if (!response.ok) {
-        throw new Error(`HTTP错误: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('AI分析API错误响应:', errorText);
+        throw new Error(`HTTP错误: ${response.status} ${response.statusText} - ${errorText}`);
       }
       
       const data = await response.json();
@@ -426,17 +422,6 @@ export function PacketAnalysis({ onBackToMain }: { onBackToMain: () => void }) {
 3. 网络连接是否正常
 
 当前无法调用AI大模型进行分析。`);
-      } else if (errorMessage.includes('真实数据') || errorMessage.includes('网络数据')) {
-        setAnalysisResult(`⚠️ 无法进行AI分析
-
-原因：系统未安装网络分析工具，无法从PCAP文件中提取真实的网络数据。
-
-解决方案：
-1. 安装Wireshark（包含tshark）
-2. 重新抓包获取真实数据
-3. 确保抓包文件包含有效的网络数据
-
-AI分析必须基于真实的网络数据，不能进行模拟分析。`);
       } else {
         setAnalysisResult(`❌ AI分析失败
 

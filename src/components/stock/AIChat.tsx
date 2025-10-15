@@ -45,7 +45,13 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [showHistory, setShowHistory] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const sessionId = 'default-session' // 在实际应用中应该使用真实的会话ID
+  const [sessionId, setSessionId] = useState('');
+
+  // 在组件加载时生成一个唯一的会话ID
+  useEffect(() => {
+    // 使用时间戳 + 随机数生成一个简单的唯一ID
+    setSessionId(`session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
+  }, []);
 
   // 自动滚动到底部
   useEffect(() => {
@@ -183,6 +189,8 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
     ])
     setCurrentConversationId(null)
     setShowHistory(false)
+    // 当用户点击“新对话”时，也生成一个新的ID
+    setSessionId(`session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
   }
 
   const handleLoadConversation = (conversation: Conversation) => {
@@ -245,7 +253,7 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col h-full space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Image 
@@ -255,7 +263,7 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
             height={24} 
             className="rounded"
           />
-          <h3 className="text-xl font-semibold">AI网络运维助手</h3>
+          <h3 className="text-xl font-semibold">NetGPT</h3>
         </div>
         <div className="flex gap-2">
           <Button
@@ -339,7 +347,7 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
       )}
 
       {/* 聊天窗口 */}
-      <Card className="h-[500px] flex flex-col">
+      <Card className="flex-1 min-h-0 flex flex-col">
         <CardContent className="flex-1 p-0 flex flex-col min-h-0">
           <ScrollArea className="flex-1 p-4 w-full" ref={scrollAreaRef}>
             <div className="space-y-4 min-h-full">
@@ -355,7 +363,7 @@ export function AIChat({ onAnalyze, onReset, isLoading = false }: AIChatProps) {
                   )}
                   <div className="flex flex-col max-w-[80%]">
                     <div className="text-xs text-gray-500 mb-1 flex items-center gap-1">
-                      {message.role === 'user' ? '您' : 'AI助手'}
+                      {message.role === 'user' ? '您' : 'NetGPT'}
                       <Clock className="h-3 w-3" />
                       {formatTime(message.timestamp)}
                     </div>

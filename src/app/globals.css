@@ -76,6 +76,32 @@
   --sidebar-accent-foreground: oklch(20.5% 0 0);
   --sidebar-border: oklch(92.2% 0 0);
   --sidebar-ring: oklch(70.8% 0.192 254.11);
+  
+  /* 柔和的辅助色彩 - 不同功能模块 */
+  --ai-module-bg: oklch(95% 0.02 160); /* 柔和的绿色背景 */
+  --ai-module-border: oklch(85% 0.04 160); /* 柔和的绿色边框 */
+  --ai-module-icon: oklch(45% 0.12 160); /* 柔和的绿色图标 */
+  --ai-module-text: oklch(35% 0.08 160); /* 柔和的绿色文字 */
+  
+  --device-module-bg: oklch(95% 0.02 220); /* 柔和的蓝色背景 */
+  --device-module-border: oklch(85% 0.04 220); /* 柔和的蓝色边框 */
+  --device-module-icon: oklch(45% 0.12 220); /* 柔和的蓝色图标 */
+  --device-module-text: oklch(35% 0.08 220); /* 柔和的蓝色文字 */
+  
+  --troubleshoot-module-bg: oklch(95% 0.02 40); /* 柔和的橙色背景 */
+  --troubleshoot-module-border: oklch(85% 0.04 40); /* 柔和的橙色边框 */
+  --troubleshoot-module-icon: oklch(45% 0.12 40); /* 柔和的橙色图标 */
+  --troubleshoot-module-text: oklch(35% 0.08 40); /* 柔和的橙色文字 */
+  
+  --packet-module-bg: oklch(95% 0.02 280); /* 柔和的紫色背景 */
+  --packet-module-border: oklch(85% 0.04 280); /* 柔和的紫色边框 */
+  --packet-module-icon: oklch(45% 0.12 280); /* 柔和的紫色图标 */
+  --packet-module-text: oklch(35% 0.08 280); /* 柔和的紫色文字 */
+  
+  /* 按钮文字颜色优化 */
+  --button-text-primary: oklch(98.5% 0 0); /* 主要按钮文字 - 白色 */
+  --button-text-secondary: oklch(25% 0 0); /* 次要按钮文字 - 深灰色 */
+  --button-text-muted: oklch(45% 0 0); /* 静音按钮文字 - 中灰色 */
 }
 
 .dark {
@@ -118,5 +144,34 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* 提高文字对比度和可读性 */
+  .text-muted-foreground {
+    color: oklch(45% 0 0); /* 提高对比度 */
+  }
+  
+  /* 按钮文字优化 */
+  .btn-text-optimized {
+    color: var(--button-text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 模块卡片悬停效果优化 */
+  .module-card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .module-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 确保在不同光线条件下的可读性 */
+  @media (prefers-contrast: high) {
+    :root {
+      --button-text-secondary: oklch(15% 0 0);
+      --button-text-muted: oklch(35% 0 0);
+    }
   }
 }

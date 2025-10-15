@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-const si = require('systeminformation');
+import si from 'systeminformation';
 
 export async function GET(request: NextRequest) {
   try {
